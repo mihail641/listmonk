@@ -443,6 +443,27 @@ UPDATE lists SET updated_at=NOW() WHERE id = ANY($1);
 -- name: delete-lists
 DELETE FROM lists WHERE id = ALL($1);
 
+--projects
+-- name: delete-projects
+DELETE FROM projects WHERE id = ALL($1);
+
+--name: update-project
+UPDATE projects SET
+                 name=(CASE WHEN $2 != '' THEN $2 ELSE projects.name END),
+                 description=(CASE WHEN $3 != '' THEN $3 ELSE projects.description END),
+                 sender_name=(CASE WHEN $4 != '' THEN $4 ELSE projects.sender_name END),
+                 sender_email=(CASE WHEN $5 != '' THEN $5 ELSE projects.sender_name END),
+                 updated_at=NOW()
+WHERE id = $1;
+
+-- name: create-project
+INSERT INTO projects (name, sender_email, sender_name,  description, created_at, updated_at) VALUES($1, $2, $3, $4, now(), now()) RETURNING id;
+
+-- name: get-projects
+SELECT * FROM projects;
+
+-- name: get-project
+SELECT * FROM projects WHERE id=$1;
 
 -- campaigns
 -- name: create-campaign

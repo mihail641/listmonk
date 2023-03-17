@@ -53,6 +53,19 @@ CREATE TABLE subscriber_lists (
 DROP INDEX IF EXISTS idx_sub_lists_sub_id; CREATE INDEX idx_sub_lists_sub_id ON subscriber_lists(subscriber_id);
 DROP INDEX IF EXISTS idx_sub_lists_list_id; CREATE INDEX idx_sub_lists_list_id ON subscriber_lists(list_id);
 DROP INDEX IF EXISTS idx_sub_lists_status; CREATE INDEX idx_sub_lists_status ON subscriber_lists(status);
+--projects
+DROP TABLE IF EXISTS projects CASCADE;
+CREATE TABLE projects (
+                          id serial PRIMARY KEY not null ,
+                          name text NOT NULL,
+                          description text NOT NULL,
+                          sender_email text NOT NULL,
+                          sender_name text not null,
+                          created_at timestamp with time zone not null,
+                          updated_at timestamp with time zone not null
+
+
+);
 
 -- templates
 DROP TABLE IF EXISTS templates CASCADE;
@@ -63,7 +76,8 @@ CREATE TABLE templates (
     subject         TEXT NOT NULL,
     body            TEXT NOT NULL,
     is_default      BOOLEAN NOT NULL DEFAULT false,
-
+    fk_project_id INTEGER REFERENCES projects(id) ON DELETE CASCADE
+        ON UPDATE CASCADE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -257,3 +271,4 @@ DROP INDEX IF EXISTS idx_bounces_sub_id; CREATE INDEX idx_bounces_sub_id ON boun
 DROP INDEX IF EXISTS idx_bounces_camp_id; CREATE INDEX idx_bounces_camp_id ON bounces(campaign_id);
 DROP INDEX IF EXISTS idx_bounces_source; CREATE INDEX idx_bounces_source ON bounces(source);
 DROP INDEX IF EXISTS idx_bounces_date; CREATE INDEX idx_bounces_date ON bounces((TIMEZONE('UTC', created_at)::DATE));
+

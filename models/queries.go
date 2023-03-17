@@ -47,6 +47,12 @@ type Queries struct {
 	DeleteSubscriptionsByQuery             string `query:"delete-subscriptions-by-query"`
 	UnsubscribeSubscribersFromListsByQuery string `query:"unsubscribe-subscribers-from-lists-by-query"`
 
+	CreateProject  *sqlx.Stmt `query:"create-project"`
+	GetProjects    *sqlx.Stmt `query:"get-projects"`
+	GetProject     *sqlx.Stmt `query:"get-project"`
+	UpdateProject  *sqlx.Stmt `query:"update-project"`
+	DeleteProjects *sqlx.Stmt `query:"delete-projects"`
+
 	CreateList      *sqlx.Stmt `query:"create-list"`
 	QueryLists      string     `query:"query-lists"`
 	GetLists        *sqlx.Stmt `query:"get-lists"`

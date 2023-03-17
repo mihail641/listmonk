@@ -229,6 +229,19 @@ type List struct {
 	Total int `db:"total" json:"-"`
 }
 
+// Project represents a mailing project.
+type Project struct {
+	Base
+	ID          int        `db:"id" json:"id"`
+	Name        string     `db:"name" json:"name"`
+	Description string     `db:"description" json:"description"`
+	SenderEmail string     `db:"sender_email" json:"sender_email"`
+	SenderName  string     `db:"sender_name" json:"sender_name"`
+	CreatedAt   null.Time  `db:"created_at" json:"created_at,omitempty"`
+	UpdatedAt   null.Time  `db:"updated_at" json:"updated_at,omitempty"`
+	Template    []Template `db:"template_body" json:"-"`
+}
+
 // Campaign represents an e-mail campaign.
 type Campaign struct {
 	Base
