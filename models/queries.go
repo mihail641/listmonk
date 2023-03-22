@@ -53,6 +53,13 @@ type Queries struct {
 	UpdateProject  *sqlx.Stmt `query:"update-project"`
 	DeleteProjects *sqlx.Stmt `query:"delete-projects"`
 
+	CreateTemplateAttributes       string     `query:"create-template-attributes"`
+	GetTemplateAttributes          *sqlx.Stmt `query:"get-template-attributes"`
+	GetTemplateAttribute           *sqlx.Stmt `query:"get-template-attribute"`
+	UpdateTemplateAttribute        string     `query:"update-template-attributes"`
+	DeleteTemplateAttributes       string     `query:"delete-template-attributes"`
+	GetTemplateAttributeByTemplate *sqlx.Stmt `query:"get-template-attribute-by-template"`
+
 	CreateList      *sqlx.Stmt `query:"create-list"`
 	QueryLists      string     `query:"query-lists"`
 	GetLists        *sqlx.Stmt `query:"get-lists"`
@@ -96,8 +103,9 @@ type Queries struct {
 	DeleteMedia *sqlx.Stmt `query:"delete-media"`
 
 	CreateTemplate     *sqlx.Stmt `query:"create-template"`
+	CreateTemplates    string     `query:"create-template"`
 	GetTemplates       *sqlx.Stmt `query:"get-templates"`
-	UpdateTemplate     *sqlx.Stmt `query:"update-template"`
+	UpdateTemplate     string     `query:"update-template"`
 	SetDefaultTemplate *sqlx.Stmt `query:"set-default-template"`
 	DeleteTemplate     *sqlx.Stmt `query:"delete-template"`
 

@@ -6,8 +6,8 @@ DROP TYPE IF EXISTS campaign_status CASCADE; CREATE TYPE campaign_status AS ENUM
 DROP TYPE IF EXISTS campaign_type CASCADE; CREATE TYPE campaign_type AS ENUM ('regular', 'optin');
 DROP TYPE IF EXISTS content_type CASCADE; CREATE TYPE content_type AS ENUM ('richtext', 'html', 'plain', 'markdown');
 DROP TYPE IF EXISTS bounce_type CASCADE; CREATE TYPE bounce_type AS ENUM ('soft', 'hard', 'complaint');
-DROP TYPE IF EXISTS template_type CASCADE; CREATE TYPE template_type AS ENUM ('campaign', 'tx');
-
+DROP TYPE IF EXISTS template_type CASCADE; CREATE TYPE template_type AS ENUM ('campaign', 'tx', 'direct');
+DROP TYPE IF EXISTS attribute_type CASCADE; CREATE TYPE attribute_type AS ENUM ('multiline_text', 'singleline_text','link');
 -- subscribers
 DROP TABLE IF EXISTS subscribers CASCADE;
 CREATE TABLE subscribers (
@@ -76,13 +76,25 @@ CREATE TABLE templates (
     subject         TEXT NOT NULL,
     body            TEXT NOT NULL,
     is_default      BOOLEAN NOT NULL DEFAULT false,
-    fk_project_id INTEGER REFERENCES projects(id) ON DELETE CASCADE
+    project_id INTEGER REFERENCES projects(id) ON DELETE CASCADE
         ON UPDATE CASCADE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 CREATE UNIQUE INDEX ON templates (is_default) WHERE is_default = true;
 
+-- template_attributes
+
+CREATE TABLE template_attributes (
+                           id              SERIAL PRIMARY KEY,
+                           templates_id INTEGER REFERENCES templates(id) ON DELETE CASCADE,
+                           key             text NOT NULL UNIQUE,
+                           description     text NOT NULL,
+                           is_required     BOOLEAN NOT NULL,
+                           default_value   text,
+                           attribute_type  attribute_type not null
+
+);
 
 -- campaigns
 DROP TABLE IF EXISTS campaigns CASCADE;

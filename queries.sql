@@ -443,6 +443,29 @@ UPDATE lists SET updated_at=NOW() WHERE id = ANY($1);
 -- name: delete-lists
 DELETE FROM lists WHERE id = ALL($1);
 
+--template_attributes
+-- name: delete-template-attributes
+DELETE FROM template_attributes WHERE id = $1;
+--name: update-template-attributes
+
+UPDATE template_attributes SET
+key=(CASE WHEN $2 != '' THEN $2 ELSE key END),
+description=(CASE WHEN $3 != '' THEN $3 ELSE description END),
+ default_value=(CASE WHEN $4 != '' THEN $4 ELSE default_value END),
+templates_id=(CASE WHEN $5 != 0 THEN $5 ELSE templates_id END)
+WHERE id = $1;
+
+-- name: create-template-attributes
+INSERT INTO template_attributes (key, description, is_required,  default_value, attribute_type, templates_id ) VALUES($1, $2, $3, $4, $5, $6) RETURNING id;
+-- name: get-template-attributes
+SELECT * FROM template_attributes;
+
+-- name: get-template-attribute
+SELECT * FROM template_attributes WHERE id=$1;
+
+--name: get-template-attribute-by-template
+SELECT * FROM template_attributes WHERE templates_id=$1;
+
 --projects
 -- name: delete-projects
 DELETE FROM projects WHERE id = ALL($1);
@@ -847,20 +870,22 @@ DELETE FROM users WHERE $1 != 1 AND id=$1;
 
 -- templates
 -- name: get-templates
--- Only if the second param ($2) is true, body is returned.
+
 SELECT id, name, type, subject, (CASE WHEN $2 = false THEN body ELSE '' END) as body,
-    is_default, created_at, updated_at
-    FROM templates WHERE ($1 = 0 OR id = $1) AND ($3 = '' OR type = $3::template_type)
-    ORDER BY created_at;
+       is_default, created_at, updated_at, project_id
+FROM templates WHERE ($1 = 0 OR id = $1) AND ($3 = '' OR type = $3::template_type)
+ORDER BY created_at;
+
 
 -- name: create-template
-INSERT INTO templates (name, type, subject, body) VALUES($1, $2, $3, $4) RETURNING id;
+INSERT INTO templates (name, type, subject, body, project_id) VALUES($1, $2, $3, $4, $5) RETURNING id;
 
 -- name: update-template
 UPDATE templates SET
     name=(CASE WHEN $2 != '' THEN $2 ELSE name END),
     subject=(CASE WHEN $3 != '' THEN $3 ELSE name END),
     body=(CASE WHEN $4 != '' THEN $4 ELSE body END),
+    project_id=(CASE WHEN $5 != 0 THEN $5 ELSE project_id END),
     updated_at=NOW()
 WHERE id = $1;
 
