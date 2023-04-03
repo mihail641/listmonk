@@ -715,7 +715,7 @@ func (m *Manager) trackLink(url, campUUID, subUUID string) string {
 	m.links[url] = uu
 	m.linksMut.Unlock()
 
-	return fmt.Sprintf(m.cfg.LinkTrackURL, uu, campUUID, subUUID)
+	return fmt.Sprintf(m.cfg.LinkTrackURL, uu)
 }
 
 // sendNotif sends a notification to registered admin e-mails.

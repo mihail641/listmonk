@@ -126,6 +126,12 @@ func initHTTPHandlers(e *echo.Echo, app *App) {
 	g.PUT("/api/lists/:id", handleUpdateList)
 	g.DELETE("/api/lists/:id", handleDeleteLists)
 
+	g.GET("/api/projects", handleGetProjects)
+	g.GET("/api/projects/:id", handleGetProject)
+	g.POST("/api/projects", handleCreateProjects)
+	g.PUT("/api/projects/:id", handleUpdateProjects)
+	g.DELETE("/api/projects/:id", handleDeleteProjects)
+
 	g.GET("/api/campaigns", handleGetCampaigns)
 	g.GET("/api/campaigns/running/stats", handleGetRunningCampaignStats)
 	g.GET("/api/campaigns/:id", handleGetCampaign)

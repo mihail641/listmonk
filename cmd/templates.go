@@ -169,9 +169,8 @@ func handleCreateTemplate(c echo.Context) error {
 	if err := o.Compile(f); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
 	// Create the template the in the DB.
-	out, err := app.core.CreateTemplate(o.Name, o.Type, o.Subject, []byte(o.Body))
+	out, err := app.core.CreateTemplate(o.Name, o.Type, o.Subject, []byte(o.Body), o.Projects.ID, o.TemplateAttributes)
 	if err != nil {
 		return err
 	}
@@ -221,7 +220,7 @@ func handleUpdateTemplate(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	out, err := app.core.UpdateTemplate(id, o.Name, o.Subject, []byte(o.Body))
+	out, err := app.core.UpdateTemplate(id, o)
 	if err != nil {
 		return err
 	}
@@ -279,12 +278,10 @@ func validateTemplate(o models.Template, app *App) error {
 	if !strHasLen(o.Name, 1, stdInputMaxLen) {
 		return errors.New(app.i18n.T("campaigns.fieldInvalidName"))
 	}
-
 	if o.Type == models.TemplateTypeCampaign && !regexpTplTag.MatchString(o.Body) {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			app.i18n.Ts("templates.placeholderHelp", "placeholder", tplTag))
 	}
-
 	if o.Type == models.TemplateTypeTx && strings.TrimSpace(o.Subject) == "" {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			app.i18n.Ts("globals.messages.missingFields", "name", "subject"))

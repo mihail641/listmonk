@@ -82,6 +82,7 @@ const (
 	BounceTypeSoft = "soft"
 
 	// Templates.
+	TemplateTypeDirect   = "direct"
 	TemplateTypeCampaign = "campaign"
 	TemplateTypeTx       = "tx"
 )
@@ -229,6 +230,19 @@ type List struct {
 	Total int `db:"total" json:"-"`
 }
 
+// Project represents a  project.
+type Project struct {
+	Base
+	ID          int        `db:"id" json:"id"`
+	Name        string     `db:"name" json:"name"`
+	Description string     `db:"description" json:"description"`
+	SenderEmail string     `db:"sender_email" json:"sender_email"`
+	SenderName  string     `db:"sender_name" json:"sender_name"`
+	CreatedAt   null.Time  `db:"created_at" json:"created_at,omitempty"`
+	UpdatedAt   null.Time  `db:"updated_at" json:"updated_at,omitempty"`
+	Template    []Template `db:"template_body" json:"template_body"`
+}
+
 // Campaign represents an e-mail campaign.
 type Campaign struct {
 	Base
@@ -308,20 +322,33 @@ type CampaignAnalyticsLink struct {
 // Campaigns represents a slice of Campaigns.
 type Campaigns []Campaign
 
+//
+type TemplateAttribute struct {
+	ID           int    `db:"id" json:"id"`
+	Key          string `db:"key" json:"key"`
+	Description  string `db:"description" json:"description"`
+	Required     bool   `db:"is_required" json:"is_required"`
+	DefaultValue string `db:"default_value" json:"default_value"`
+	Type         string `db:"attribute_type" json:"type"`
+	IDTemplate   int    `db:"templates_id" json:"templates_id"`
+}
+
 // Template represents a reusable e-mail template.
 type Template struct {
 	Base
 
 	Name string `db:"name" json:"name"`
 	// Subject is only for type=tx.
-	Subject   string `db:"subject" json:"subject"`
-	Type      string `db:"type" json:"type"`
-	Body      string `db:"body" json:"body,omitempty"`
-	IsDefault bool   `db:"is_default" json:"is_default"`
-
+	Subject   string  `db:"subject" json:"subject"`
+	Type      string  `db:"type" json:"type"`
+	Body      string  `db:"body"       json:"body,omitempty"`
+	IsDefault bool    `db:"is_default" json:"is_default"`
+	ProjectId int     `db:"project_id" json:"project_id"`
+	Projects  Project `json:"projects"`
 	// Only relevant to tx (transactional) templates.
-	SubjectTpl *txttpl.Template   `json:"-"`
-	Tpl        *template.Template `json:"-"`
+	SubjectTpl         *txttpl.Template    `json:"-"`
+	Tpl                *template.Template  `json:"-"`
+	TemplateAttributes []TemplateAttribute ` json:"template_attributes"`
 }
 
 // Bounce represents a single bounce event.
